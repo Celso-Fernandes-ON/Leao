@@ -9,7 +9,8 @@ public class PersistenciaCSV {
             BufferedWriter out = new BufferedWriter(new FileWriter(CAMINHO));
 
             for(Transacao t: lista){
-                out.write(t.getId() + ";" + t.getTipo() + ";" + t.getValor() + ";" + t.getDescricao() + ";" + t.getData() + ";" + t.getCategoria());
+                String descricaoSegura = t.getDescricao().replace(";", ",");
+                out.write(t.getId() + ";" + t.getTipo() + ";" + t.getCategoria() + ";" + t.getData() + ";" + descricaoSegura + ";" + t.getValor());
                 out.newLine();
             }
             out.close();
@@ -32,10 +33,10 @@ public class PersistenciaCSV {
                 String [] partes = linha.split(";");
                 int id = Integer.parseInt(partes[0]);
                 String tipo = partes[1];
-                String categoria = partes[5];
-                String data = partes[3];
-                String descricao = partes[4];
                 double valor = Double.parseDouble(partes[2]);
+                String descricao = partes[3];
+                String data = partes[4];
+                String categoria = partes[5];
                 lista.add(new Transacao(id, tipo, categoria, data, descricao, valor));
             }
             reader.close();

@@ -17,7 +17,7 @@ public class JanelaPrincipal extends JFrame {
         JTabbedPane abas = new JTabbedPane();
         abas.addTab("Extrato", new PainelExtrato(gerenciador, persistencia, this));
         abas.addTab("Relatórios", new PainelRelatorios(gerenciador));
-        abas.addTab("Nova Trasação", new PainelFormulario(gerenciador, persistencia, this));
+        abas.addTab("Nova Transação", new PainelFormulario(gerenciador, persistencia, this));
         add(abas, BorderLayout.CENTER);
 
         labelSaldo = new JLabel();

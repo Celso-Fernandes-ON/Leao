@@ -1,5 +1,7 @@
 import javax.swing.*;
+import javax.swing.text.MaskFormatter;
 import java.awt.*;
+import java.text.ParseException;
 
 public class PainelFormulario extends JPanel {
 
@@ -10,11 +12,23 @@ public class PainelFormulario extends JPanel {
     private JTextField campoData;
     private JTextField campoDescricao;
 
+    private final String[] categoriasReceita = {"Salário", "Renda fixa", "Investimentos", "Transferência", "Outros"};
+    private final String[] categoriasDespesa = {"Alimentação", "Transferência", "Transporte", "Lazer", "Saúde", "Contas", "Outros"};
+
     private GerenciadorTransacoes gerenciador;
     private PersistenciaCSV persistencia;
     private JanelaPrincipal janelaPai;
 
     public PainelFormulario(GerenciadorTransacoes gerenciador, PersistenciaCSV persistencia, JanelaPrincipal janelaPai) {
+
+        try {
+            MaskFormatter mascaraData = new MaskFormatter("##/##/####");
+            mascaraData.setPlaceholderCharacter('_');
+            campoData = new JFormattedTextField(mascaraData);
+            campoData.setColumns(15);
+        } catch (ParseException e) {
+            campoData = new JTextField(15);
+        }
 
         this.gerenciador = gerenciador;
         this.persistencia = persistencia;
@@ -30,7 +44,9 @@ public class PainelFormulario extends JPanel {
 
         comboTipo = new JComboBox<>(new String[]{"RECEITA", "DESPESA"});
 
-        comboCategoria = new JComboBox<>(new String[]{"Salário","Alimentação","Transporte","Lazer","Saúde","Contas","Outros"});
+        comboCategoria = new JComboBox<>();
+        comboTipo.addActionListener(e -> atualizarCategorias());
+        atualizarCategorias();
 
         campoValor = new JTextField(15);
 
@@ -133,5 +149,20 @@ public class PainelFormulario extends JPanel {
         campoValor.setText("");
         campoData.setText("");
         campoDescricao.setText("");
+    }
+    private void atualizarCategorias() {
+        comboCategoria.removeAllItems();
+
+        String tipoSelecionado = comboTipo.getSelectedItem().toString();
+
+        if (tipoSelecionado.equals("RECEITA")) {
+            for (String cat : categoriasReceita) {
+                comboCategoria.addItem(cat);
+            }
+        } else {
+            for (String cat : categoriasDespesa) {
+                comboCategoria.addItem(cat);
+            }
+        }
     }
 }
