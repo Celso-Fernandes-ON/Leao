@@ -33,10 +33,10 @@ public class PersistenciaCSV {
                 String [] partes = linha.split(";");
                 int id = Integer.parseInt(partes[0]);
                 String tipo = partes[1];
-                double valor = Double.parseDouble(partes[2]);
-                String descricao = partes[3];
-                String data = partes[4];
-                String categoria = partes[5];
+                String categoria = partes[2];
+                String data = partes[3];
+                String descricao = partes[4];
+                double valor = Double.parseDouble(partes[5]);
                 lista.add(new Transacao(id, tipo, categoria, data, descricao, valor));
             }
             reader.close();
