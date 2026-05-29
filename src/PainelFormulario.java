@@ -19,6 +19,12 @@ public class PainelFormulario extends JPanel {
     private PersistenciaCSV persistencia;
     private JanelaPrincipal janelaPai;
 
+    /**
+     *
+     * @param gerenciador
+     * @param persistencia
+     * @param janelaPai
+     */
     public PainelFormulario(GerenciadorTransacoes gerenciador, PersistenciaCSV persistencia, JanelaPrincipal janelaPai) {
 
         try {
@@ -106,16 +112,10 @@ public class PainelFormulario extends JPanel {
     private void salvarTransacao() {
 
         String tipo = comboTipo.getSelectedItem().toString();
-
         String categoria =  comboCategoria.getSelectedItem().toString();
-
         String valorTexto =  campoValor.getText();
-
         String data = campoData.getText();
-
         String descricao = campoDescricao.getText();
-
-
 
         if (!Validador.validarCampoObrigatorio(valorTexto)) {
             JOptionPane.showMessageDialog(this, "Digite um valor.", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -128,9 +128,9 @@ public class PainelFormulario extends JPanel {
             JOptionPane.showMessageDialog(this, "Valor deve ser maior que zero.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
+        // Verifica o formato da data
         if (!Validador.validarData(data)) {
-            JOptionPane.showMessageDialog(this, "Data inválida. Use dd/MM/yyyy.", "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Data inválida. Use 23/04/2025.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -143,16 +143,16 @@ public class PainelFormulario extends JPanel {
 
         limparCampos();
     }
-
+    // Reseta os campos
     private void limparCampos() {
 
         campoValor.setText("");
         campoData.setText("");
         campoDescricao.setText("");
     }
+    // Ao trocar o tipo muda as categorias a serem selecionadas
     private void atualizarCategorias() {
         comboCategoria.removeAllItems();
-
         String tipoSelecionado = comboTipo.getSelectedItem().toString();
 
         if (tipoSelecionado.equals("RECEITA")) {

@@ -1,3 +1,7 @@
+/**
+ * Representa uma movimentação financeira do sistema.
+ * Pode ser uma receita (entrada) ou despesa (saída).
+ */
 public class Transacao {
     private int id;
     private String tipo;
@@ -52,8 +56,14 @@ public class Transacao {
     public void setCategoria(String categoria) {
         this.categoria = categoria;
     }
+
+    /**
+     * Sobrescreve o método toString da classe
+     * @return retorna uma String formatada contendo id, data, tipo, categoria, valordescricao
+     */
     @Override
     public String toString(){
+
         return "[" + id + "] " + data + " | " + tipo + " | " + categoria + " | R$ " + String.format("%.2f", valor) + " | " + descricao;
     }
 }

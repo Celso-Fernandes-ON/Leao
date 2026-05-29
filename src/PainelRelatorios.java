@@ -57,7 +57,7 @@ public class PainelRelatorios extends JPanel {
 
     private void gerarRelatorioPeriodo() {
         String inicio = dataInicio.getText();
-        String fim    = dataFim.getText();
+        String fim = dataFim.getText();
 
         if (!Validador.validarData(inicio) || !Validador.validarData(fim)) {
             JOptionPane.showMessageDialog(this, "Data inválida. Use o formato dd/MM/yyyy.");
