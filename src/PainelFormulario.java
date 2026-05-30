@@ -2,7 +2,11 @@ import javax.swing.*;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.text.ParseException;
-
+/**
+ * Painel de cadastro de novas transações financeiras.
+ * Contém formulário com campos de tipo, categoria, valor, data e descrição.
+ * As categorias disponíveis mudam automaticamente conforme o tipo selecionado.
+ */
 public class PainelFormulario extends JPanel {
 
     private JComboBox<String> comboTipo;
@@ -12,6 +16,7 @@ public class PainelFormulario extends JPanel {
     private JTextField campoData;
     private JTextField campoDescricao;
 
+    // categorias separadas por tipo para evitar combinações inválidas (ex: "Salário" como despesa)
     private final String[] categoriasReceita = {"Salário", "Renda fixa", "Investimentos", "Transferência", "Outros"};
     private final String[] categoriasDespesa = {"Alimentação", "Transferência", "Transporte", "Lazer", "Saúde", "Contas", "Outros"};
 
@@ -20,13 +25,16 @@ public class PainelFormulario extends JPanel {
     private JanelaPrincipal janelaPai;
 
     /**
+     * Cria o painel de formulário e monta todos os componentes visuais.
      *
-     * @param gerenciador
-     * @param persistencia
-     * @param janelaPai
+     * @param gerenciador responsável por adicionar a transação à lista
+     * @param persistencia responsável por salvar os dados no arquivo após cada inserção
+     * @param janelaPai   referência à janela principal para atualizar o saldo após salvar
      */
     public PainelFormulario(GerenciadorTransacoes gerenciador, PersistenciaCSV persistencia, JanelaPrincipal janelaPai) {
 
+        // tenta criar campo de data com máscara visual dd/MM/yyyy
+        // se falhar por algum motivo, usa um JTextField simples como alternativa
         try {
             MaskFormatter mascaraData = new MaskFormatter("##/##/####");
             mascaraData.setPlaceholderCharacter('_');
@@ -51,11 +59,11 @@ public class PainelFormulario extends JPanel {
         comboTipo = new JComboBox<>(new String[]{"RECEITA", "DESPESA"});
 
         comboCategoria = new JComboBox<>();
+        // atualiza as categorias sempre que o tipo for alterado
         comboTipo.addActionListener(e -> atualizarCategorias());
         atualizarCategorias();
 
         campoValor = new JTextField(15);
-
         campoData = new JTextField("dd/MM/yyyy", 15);
 
         campoDescricao = new JTextField(15);
@@ -63,6 +71,7 @@ public class PainelFormulario extends JPanel {
         JButton btnSalvar = new JButton("Salvar Transação");
 
 
+        // montagem do layout linha a linha usando GridBagConstraints
         gbc.gridx = 0;
         gbc.gridy = 0;
         add(new JLabel("Tipo:"), gbc);
@@ -98,7 +107,7 @@ public class PainelFormulario extends JPanel {
         gbc.gridx = 1;
         add(campoDescricao, gbc);
 
-
+        // botão ocupa as duas colunas (gridwidth = 2)
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.gridwidth = 2;
@@ -108,7 +117,11 @@ public class PainelFormulario extends JPanel {
 
         btnSalvar.addActionListener(e -> salvarTransacao());
     }
-
+    /**
+     * Valida os campos e salva a transação ao clicar no botão.
+     * A ordem de validação é: campo vazio → valor inválido → data inválida.
+     * Se todas as validações passarem, adiciona, persiste e atualiza a interface.
+     */
     private void salvarTransacao() {
 
         String tipo = comboTipo.getSelectedItem().toString();
@@ -128,41 +141,44 @@ public class PainelFormulario extends JPanel {
             JOptionPane.showMessageDialog(this, "Valor deve ser maior que zero.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        // Verifica o formato da data
+        // verifica o formato da data antes de tentar salvar
         if (!Validador.validarData(data)) {
             JOptionPane.showMessageDialog(this, "Data inválida. Use 23/04/2025.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         gerenciador.adicionarTransacao(tipo, categoria, data, descricao, valor);
-
         persistencia.salvarTransacoes(gerenciador.listarTodas());
+
+        // atualiza o saldo na barra inferior da janela principal
         janelaPai.atualizarSaldo();
 
         JOptionPane.showMessageDialog(this,"Transação salva!");
-
         limparCampos();
     }
-    // Reseta os campos
+    /**
+     * Limpa os campos editáveis após salvar uma transação.
+     * Os combos de tipo e categoria não são resetados intencionalmente —
+     * o usuário provavelmente vai cadastrar outra transação do mesmo tipo.
+     */
     private void limparCampos() {
 
         campoValor.setText("");
         campoData.setText("");
         campoDescricao.setText("");
     }
-    // Ao trocar o tipo muda as categorias a serem selecionadas
+    /**
+     * Atualiza as opções do comboCategoria conforme o tipo selecionado.
+     * Chamado automaticamente ao trocar o tipo no comboTipo.
+     */
     private void atualizarCategorias() {
         comboCategoria.removeAllItems();
         String tipoSelecionado = comboTipo.getSelectedItem().toString();
 
-        if (tipoSelecionado.equals("RECEITA")) {
-            for (String cat : categoriasReceita) {
-                comboCategoria.addItem(cat);
-            }
-        } else {
-            for (String cat : categoriasDespesa) {
-                comboCategoria.addItem(cat);
-            }
+        // carrega o array de categorias correspondente ao tipo escolhido
+        String[] categorias = tipoSelecionado.equals("RECEITA") ? categoriasReceita : categoriasDespesa;
+        for (String cat : categorias) {
+            comboCategoria.addItem(cat);
         }
     }
 }

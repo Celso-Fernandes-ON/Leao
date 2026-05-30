@@ -3,6 +3,11 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * Painel de extrato financeiro — exibe todas as transações em uma tabela.
+ * Permite filtrar por tipo e por período de datas.
+ * Oferece botões para editar e excluir transações selecionadas.
+ */
 public class PainelExtrato extends JPanel {
 
     private JTable tabela;
@@ -17,6 +22,13 @@ public class PainelExtrato extends JPanel {
     private PersistenciaCSV persistencia;
     private JanelaPrincipal janelaPrincipal;
 
+    /**
+     * Cria o painel de extrato com tabela, filtros e botões de ação.
+     *
+     * @param gerenciador    fonte dos dados de transações
+     * @param persistencia   responsável por salvar após edição ou exclusão
+     * @param janelaPrincipal referência à janela principal para atualizar o saldo
+     */
     public PainelExtrato( GerenciadorTransacoes gerenciador, PersistenciaCSV persistencia, JanelaPrincipal janelaPrincipal) {
         this.gerenciador = gerenciador;
         this.persistencia = persistencia;
@@ -25,6 +37,7 @@ public class PainelExtrato extends JPanel {
         setLayout(new BorderLayout());
 
 
+        // painel de filtros no topo
         JPanel painelFiltros = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         comboFiltroTipo = new JComboBox<>(new String[]{"Todos","RECEITA","DESPESA" }  );
@@ -44,9 +57,9 @@ public class PainelExtrato extends JPanel {
         painelFiltros.add(campoDataFim);
 
         painelFiltros.add(btnFiltrar);
-
-
         add(painelFiltros, BorderLayout.NORTH);
+
+        // tabela central com as transações
         modelo = new DefaultTableModel( new String[]{"ID", "Data", "Tipo", "Categoria", "Valor", "Descrição"},0 );
         tabela = new JTable(modelo);
 
@@ -54,7 +67,7 @@ public class PainelExtrato extends JPanel {
 
         add(scroll, BorderLayout.CENTER);
 
-
+        // botões de ação no rodapé
         JPanel painelBotoes = new JPanel();
 
         JButton btnExcluir = new JButton("Excluir");
@@ -65,16 +78,22 @@ public class PainelExtrato extends JPanel {
 
         add(painelBotoes, BorderLayout.SOUTH);
 
-
+        // conecta cada botão ao seu método correspondente
         btnFiltrar.addActionListener(e -> aplicarFiltro());
         btnExcluir.addActionListener(e -> excluirTransacao());
         btnEditar.addActionListener(e -> editarTransacao());
 
-
+        // carrega todas as transações ao abrir o painel
         carregarTabela(gerenciador.listarTodas());
     }
 
-
+    /**
+     * Popula a tabela com a lista de transações fornecida.
+     * Limpa o conteúdo anterior antes de inserir os novos dados.
+     * Público para permitir atualização externa após cadastro de nova transação.
+     *
+     * @param lista lista de transações a exibir
+     */
     public void carregarTabela(ArrayList<Transacao> lista ) {
 
         modelo.setRowCount(0);
@@ -84,7 +103,10 @@ public class PainelExtrato extends JPanel {
         }
     }
 
-
+    /**
+     * Aplica os filtros selecionados (tipo e/ou período) e recarrega a tabela.
+     * Filtros em branco são ignorados — se nenhum for informado, exibe tudo.
+     */
     private void aplicarFiltro() {
 
         String tipo = comboFiltroTipo.getSelectedItem().toString();
@@ -93,6 +115,7 @@ public class PainelExtrato extends JPanel {
 
         ArrayList<Transacao> lista = gerenciador.listarTodas();
 
+        // aplica filtro de período apenas se ambas as datas forem preenchidas e válidas
         if (!dataInicio.isEmpty() && !dataFim.isEmpty()) {
             if (Validador.validarData(dataInicio) && Validador.validarData(dataFim)) {
                 lista = gerenciador.filtrarPorPeriodo(dataInicio, dataFim);
@@ -101,6 +124,7 @@ public class PainelExtrato extends JPanel {
                 return;
             }
         }
+        // aplica filtro de tipo sobre o resultado já filtrado por período
         if (!tipo.equals("Todos")) {
             ArrayList<Transacao> filtrada = new ArrayList<>();
             for (Transacao t : lista) {
@@ -113,7 +137,10 @@ public class PainelExtrato extends JPanel {
         carregarTabela(lista);
     }
 
-
+    /**
+     * Exclui a transação da linha selecionada na tabela após confirmação do usuário.
+     * Atualiza o arquivo e o saldo após a remoção.
+     */
     private void excluirTransacao() {
         int linha =tabela.getSelectedRow();
         if (linha == -1) {
@@ -133,6 +160,11 @@ public class PainelExtrato extends JPanel {
 
         }
     }
+    /**
+     * Abre um diálogo para editar a transação da linha selecionada.
+     * Os campos são pré-preenchidos com os dados atuais da transação.
+     * Valida os novos dados antes de confirmar a edição.
+     */
     private void editarTransacao() {
         int linha = tabela.getSelectedRow();
 
@@ -145,10 +177,13 @@ public class PainelExtrato extends JPanel {
         Transacao t = gerenciador.buscarPorId(id);
 
         if (t != null) {
+            // cria campos do diálogo pré-preenchidos com os dados atuais
             JTextField campoValor = new JTextField(String.valueOf(t.getValor()));
             JTextField campoData = new JTextField(t.getData());
             JTextField campoDescricao = new JTextField(t.getDescricao());
             JComboBox<String> comboCategoria = new JComboBox<>();
+
+            // carrega categorias compatíveis com o tipo da transação
             if(t.getTipo().equals("RECEITA")){
                 comboCategoria.setModel(new DefaultComboBoxModel<>(new String[]{"Salário", "Renda fixa", "Investimentos", "Transferência", "Outros"}));
             }
@@ -178,6 +213,7 @@ public class PainelExtrato extends JPanel {
                     janelaPrincipal.atualizarSaldo();
 
                 } catch (NumberFormatException ex) {
+                    // captura entrada de texto no campo valor (ex: "abc")
                     JOptionPane.showMessageDialog(this, "Valor digitado é inválido.");
                 }
             }
