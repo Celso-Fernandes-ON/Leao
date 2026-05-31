@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.util.ArrayList;
+import com.formdev.flatlaf.FlatDarculaLaf;
 
 /**
  * Ponto de entrada do sistema de Gerenciamento de Finanças Pessoais.
@@ -19,9 +20,13 @@ public class Main {
         ArrayList<Transacao> lista = persistencia.carregarTransacoes();
         GerenciadorTransacoes gerenciador = new GerenciadorTransacoes(lista);
 
+        try {
+            FlatDarculaLaf.setup();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // invokeLater garante que a interface seja criada na Event Dispatch Thread (EDT)
         // rodar Swing fora da EDT pode causar travamentos e comportamento imprevisível
-
         SwingUtilities.invokeLater(() -> {
             new JanelaPrincipal(gerenciador, persistencia).setVisible(true);
         });

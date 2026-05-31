@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
 /**
@@ -13,9 +14,9 @@ public class PainelRelatorios extends JPanel {
     private JTextField dataInicio;
     private JTextField dataFim;
 
-    private JLabel totalDespesas;
-    private JLabel totalReceitas;
-    private JLabel saldo;
+    private JLabel valorDespesas;
+    private JLabel valorReceitas;
+    private JLabel valorSaldo;
 
     /**
      * Cria o painel de relatórios com as três abas disponíveis.
@@ -40,40 +41,105 @@ public class PainelRelatorios extends JPanel {
      * @return JPanel configurado com os componentes do relatório de período
      */
     private JPanel criarPainelPeriodo(){
-        JPanel painel = new JPanel(new GridLayout(6,2,10,10));
+        JPanel externo = new JPanel(new BorderLayout());
+        externo.setBorder(new EmptyBorder(20, 20, 20, 20));
+
+        JPanel conteudo = new JPanel();
+        conteudo.setLayout(new BoxLayout(conteudo, BoxLayout.Y_AXIS));
+        conteudo.setMaximumSize(new Dimension(700, Integer.MAX_VALUE));
+
+        JLabel lblInicio = new JLabel("Data início:");
+        lblInicio.setFont(lblInicio.getFont().deriveFont(Font.BOLD, 13f));
+        lblInicio.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         dataInicio = new JTextField();
-        dataFim = new JTextField();
+        dataInicio.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
+        dataInicio.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        totalReceitas = new JLabel("Receitas: R$ 0,00");
-        totalDespesas = new JLabel("Despesas: R$ 0,00");
-        saldo= new JLabel("Saldo: R$ 0,00");
+        JLabel lblFim = new JLabel("Data Fim:");
+        lblFim.setFont(lblInicio.getFont().deriveFont(Font.BOLD, 13f));
+        lblFim.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        dataFim = new JTextField();
+        dataFim.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
+        dataFim.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JButton btnGerar = new JButton("Gerar");
+        btnGerar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 42));
+        btnGerar.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btnGerar.setFont(btnGerar.getFont().deriveFont(Font.BOLD, 14f));
+
         btnGerar.addActionListener(e -> gerarRelatorioPeriodo());
 
-        painel.add(new JLabel("Data início:"));
-        painel.add(dataInicio);
-        painel.add(new JLabel("Data Fim:"));
-        painel.add(dataFim);
 
-        painel.add(btnGerar);
+        JPanel cardReceitas = criarCard("Receitas","R$ 0,00", new Color(39, 174, 96));
+        JPanel cardDespesas = criarCard("Despesas","R$ 0,00", new Color(192, 57, 43));
+        JPanel cardSaldo= criarCard("Saldo","R$ 0,00", new Color(41, 128, 185));
 
-        painel.add(new JLabel(""));
+        valorReceitas = (JLabel) ((JPanel) cardReceitas.getComponent(0)).getComponent(1);
+        valorDespesas = (JLabel) ((JPanel) cardDespesas.getComponent(0)).getComponent(1);
+        valorSaldo = (JLabel) ((JPanel) cardSaldo.getComponent(0)).getComponent(1);
 
-        painel.add(totalReceitas);
-        painel.add(totalDespesas);
-        painel.add(saldo);
+        conteudo.add(lblInicio);
+        conteudo.add(Box.createVerticalStrut(6));
+        conteudo.add(dataInicio);
+        conteudo.add(Box.createVerticalStrut(16));
 
-        return painel;
+        conteudo.add(lblFim);
+        conteudo.add(Box.createVerticalStrut(6));
+        conteudo.add(dataFim);
+        conteudo.add(Box.createVerticalStrut(20));
+
+        conteudo.add(btnGerar);
+        conteudo.add(Box.createVerticalStrut(24));
+
+        conteudo.add(cardReceitas);
+        conteudo.add(Box.createVerticalStrut(10));
+        conteudo.add(cardDespesas);
+        conteudo.add(Box.createVerticalStrut(10));
+        conteudo.add(cardSaldo);
+
+        JPanel wrapper = new JPanel(new GridLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        gbc.insets = new Insets(0, 40, 0, 40);
+        wrapper.add(conteudo, gbc);
+
+        externo.add(wrapper, BorderLayout.NORTH);
+        return externo;
+    }
+    private JPanel criarCard(String titulo, String valorInicial, Color corValor){
+        JPanel card = new JPanel(new BorderLayout());
+        card.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(80, 80, 80), 1, true), new EmptyBorder(12, 16, 12, 16)));
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+        card.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JPanel interno = new JPanel(new BorderLayout());
+        interno.setOpaque(false);
+
+        JLabel lblTitulo = new JLabel(titulo);
+        lblTitulo.setFont(lblTitulo.getFont().deriveFont(Font.PLAIN, 14f));
+
+        JLabel lblValor = new JLabel(valorInicial);
+        lblValor.setFont(lblTitulo.getFont().deriveFont(Font.PLAIN, 15f));
+        lblValor.setForeground(corValor);
+        lblValor.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        interno.add(lblTitulo, BorderLayout.WEST);
+        interno.add(lblValor, BorderLayout.EAST);
+
+        card.add(interno, BorderLayout.CENTER);
+
+        return card;
     }
     /**
      * Calcula os totais do período informado e atualiza os labels de resultado.
      * Chamado ao clicar no botão Gerar do painel de período.
      */
     private void gerarRelatorioPeriodo() {
-        String inicio = dataInicio.getText();
-        String fim = dataFim.getText();
+        String inicio = dataInicio.getText().trim();
+        String fim = dataFim.getText().trim();
 
         if (!Validador.validarData(inicio) || !Validador.validarData(fim)) {
             JOptionPane.showMessageDialog(this, "Data inválida. Use o formato dd/MM/yyyy.");
@@ -93,10 +159,13 @@ public class PainelRelatorios extends JPanel {
                 despesas += t.getValor();
             }
         }
+        double saldoPeriodo = receitas - despesas;
 
-        totalReceitas.setText("Receitas: R$ " + String.format("%.2f", receitas));
-        totalDespesas.setText("Despesas: R$ " + String.format("%.2f", despesas));
-        saldo.setText("Saldo: R$ " + String.format("%.2f", receitas - despesas));
+        valorReceitas.setText("Receitas: R$ " + String.format("%.2f", receitas));
+        valorDespesas.setText("Despesas: R$ " + String.format("%.2f", despesas));
+        valorSaldo.setText("Saldo: R$ " + String.format("%.2f", saldoPeriodo));
+
+        valorSaldo.setForeground(saldoPeriodo >= 0 ? new Color(41,128,185) : new Color(192,57,43));
     }
     /**
      * Cria o painel de relatório por categoria com área de texto formatada.
@@ -151,6 +220,7 @@ public class PainelRelatorios extends JPanel {
         btn.addActionListener(e -> {
             double saldo = 0;
             StringBuilder sb = new StringBuilder("=== EVOLUÇÃO DO SALDO ===\n\n");
+
             // percorre as transações em ordem de cadastro calculando o saldo progressivo
             for (Transacao t : gerenciador.listarTodas()) {
                 if (t.getTipo().equals("RECEITA")) saldo += t.getValor();

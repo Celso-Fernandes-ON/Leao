@@ -22,7 +22,9 @@ public class JanelaPrincipal extends JFrame {
         this.gerenciador = g;
         this.persistencia = p;
         setTitle("Finanças Pessoais");
-        setSize(1920, 1080);
+        setSize(950, 620);
+        // Inicializar maximizado
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
