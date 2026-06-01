@@ -193,5 +193,7 @@ Acesse **"Relatórios" → aba "Evolução"** para acompanhar o saldo ao longo d
 
 ## Autor
 
+Celso Fernandes
+Gabriel Figueiredo
 Desenvolvido como projeto final de **Linguagem de Programação 1**.
 
