@@ -21,7 +21,7 @@ public class GerenciadorTransacoes {
      * @param listaCarregada lista de transações lida do arquivo CSV
      */
 
-    public GerenciadorTransacoes(ArrayList<Transacao> listaCarregada) {
+    public GerenciadorTransacoes(ArrayList<Transacao> listaCarregada){
         this.lista = listaCarregada;
         this.proximoID = 1;
         // percorre a lista para encontrar o maior ID existente
@@ -174,7 +174,7 @@ public class GerenciadorTransacoes {
      * @return nova lista com as transações dentro do período informado
      */
 
-    public ArrayList<Transacao> filtrarPorPeriodo(String dataInicio, String dataFim) {
+    public ArrayList<Transacao> filtrarPorPeriodo(String dataInicio, String dataFim){
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate inicio = LocalDate.parse(dataInicio, fmt);
         LocalDate fim = LocalDate.parse(dataFim, fmt);

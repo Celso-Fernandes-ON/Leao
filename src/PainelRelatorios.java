@@ -99,7 +99,7 @@ public class PainelRelatorios extends JPanel {
         conteudo.add(Box.createVerticalStrut(10));
         conteudo.add(cardSaldo);
 
-        JPanel wrapper = new JPanel(new GridLayout());
+        JPanel wrapper = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1;
@@ -109,6 +109,14 @@ public class PainelRelatorios extends JPanel {
         externo.add(wrapper, BorderLayout.NORTH);
         return externo;
     }
+    /**
+     * Cria um card visual com título e valor colorido para exibir resultados.
+     *
+     * @param titulo       texto do título exibido à esquerda
+     * @param valorInicial valor inicial antes de gerar o relatório
+     * @param corValor     cor do texto do valor
+     * @return JPanel estilizado como card de resultado
+     */
     private JPanel criarCard(String titulo, String valorInicial, Color corValor){
         JPanel card = new JPanel(new BorderLayout());
         card.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(80, 80, 80), 1, true), new EmptyBorder(12, 16, 12, 16)));
@@ -161,9 +169,9 @@ public class PainelRelatorios extends JPanel {
         }
         double saldoPeriodo = receitas - despesas;
 
-        valorReceitas.setText("Receitas: R$ " + String.format("%.2f", receitas));
-        valorDespesas.setText("Despesas: R$ " + String.format("%.2f", despesas));
-        valorSaldo.setText("Saldo: R$ " + String.format("%.2f", saldoPeriodo));
+        valorReceitas.setText("R$ " + String.format("%.2f", receitas));
+        valorDespesas.setText("R$ " + String.format("%.2f", despesas));
+        valorSaldo.setText("R$ " + String.format("%.2f", saldoPeriodo));
 
         valorSaldo.setForeground(saldoPeriodo >= 0 ? new Color(41,128,185) : new Color(192,57,43));
     }

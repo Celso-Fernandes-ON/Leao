@@ -3,6 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/Leao_jar</output-path>
     <root id="archive" name="Leao.jar">
       <element id="module-output" name="Leao" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/flatlaf-3.7.1.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

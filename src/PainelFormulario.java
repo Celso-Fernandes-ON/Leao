@@ -64,7 +64,6 @@ public class PainelFormulario extends JPanel {
         atualizarCategorias();
 
         campoValor = new JTextField(15);
-        campoData = new JTextField("dd/MM/yyyy", 15);
 
         campoDescricao = new JTextField(15);
 

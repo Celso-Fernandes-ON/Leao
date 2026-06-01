@@ -17,21 +17,26 @@ Projeto desenvolvido como trabalho final da disciplina **Linguagem de Programaç
 | Arquivo CSV | Armazenamento dos dados |
 
 ---
+## Dependências
+| Biblioteca | Versão | Uso |
+|---|--------|---|
+| [FlatLaf](https://github.com/JFormDesigner/FlatLaf) | 3.7.1  | Tema visual moderno para Swing |
 
 ## Como executar
 
 ### Pré-requisitos
-- Java 17 ou superior instalado
-- Todos os arquivos `.java` na mesma pasta
+- Java 17 ou superior
+- Arquivo `flatlaf-3.7.1.jar` na pasta `lib/` (incluso no repositório)
 
 ### Compilar
 ```bash
-javac *.java
+javac -cp lib/flatlaf-3.7.1.jar *.java
 ```
 
 ### Executar
 ```bash
-java Main
+java -cp ".;lib/flatlaf-3.7.1.jar" Main        # Windows
+java -cp ".:lib/flatlaf-3.7.1.jar" Main        # Mac/Linux
 ```
 
 > O sistema cria automaticamente a pasta `dados/` com o arquivo `transacoes.csv` na primeira transação salva. Não é necessário criar nada manualmente.
@@ -59,16 +64,19 @@ java Main
 ```
 projeto/
 │
-├── Main.java                   → Ponto de entrada — inicializa e abre a janela
-├── Transacao.java              → Modelo de dados de uma movimentação financeira
-├── GerenciadorTransacoes.java  → Lógica de negócio (adicionar, filtrar, calcular)
-├── Validador.java              → Validações de entrada (valor, data, campos)
-├── PersistenciaCSV.java        → Leitura e gravação do arquivo CSV
-├── JanelaPrincipal.java        → Janela raiz com abas e barra de saldo
-├── PainelFormulario.java       → Aba de cadastro de novas transações
-├── PainelExtrato.java          → Aba de extrato com filtros e ações
-├── PainelRelatorios.java       → Aba de relatórios financeiros
+├──src
+│    ├── Main.java                   → Ponto de entrada — inicializa e abre a janela
+│    ├── Transacao.java              → Modelo de dados de uma movimentação financeira
+│    ├── GerenciadorTransacoes.java  → Lógica de negócio (adicionar, filtrar, calcular)
+│    ├── Validador.java              → Validações de entrada (valor, data, campos)
+│    ├── PersistenciaCSV.java        → Leitura e gravação do arquivo CSV
+│    ├── JanelaPrincipal.java        → Janela raiz com abas e barra de saldo
+│    ├── PainelFormulario.java       → Aba de cadastro de novas transações
+│    ├── PainelExtrato.java          → Aba de extrato com filtros e ações
+│    └──  PainelRelatorios.java      → Aba de relatórios financeiros
 │
+├── lib/
+│   └── flatlaf-3.7.1.jar       → biblioteca de tema visual
 └── dados/
     └── transacoes.csv          → Arquivo gerado automaticamente pelo sistema
 ```
@@ -112,7 +120,7 @@ id;tipo;categoria;data;descricao;valor
 
 ---
 
-##  Telas do sistema
+## Telas do sistema
 
 ### Cadastro de nova transação
 Acesse a aba **"Nova Transação"** para registrar uma movimentação.

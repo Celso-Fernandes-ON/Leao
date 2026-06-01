@@ -36,7 +36,7 @@ public class PersistenciaCSV {
 
     /**
      * Carrega as Transações salvas no arquivo
-     * @return lista
+     * @return lista de transações carregadas do arquivo, ou lista vazia se o arquivo não existir
      */
     public ArrayList<Transacao> carregarTransacoes(){
         ArrayList<Transacao> lista = new ArrayList<>();

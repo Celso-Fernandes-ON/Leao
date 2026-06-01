@@ -16,15 +16,16 @@ public class Main {
      * @param args argumentos de linha de comando (não utilizados)
      */
     public static void main(String[] args) {
-        PersistenciaCSV persistencia = new PersistenciaCSV();
-        ArrayList<Transacao> lista = persistencia.carregarTransacoes();
-        GerenciadorTransacoes gerenciador = new GerenciadorTransacoes(lista);
-
         try {
             FlatDarculaLaf.setup();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        PersistenciaCSV persistencia = new PersistenciaCSV();
+        ArrayList<Transacao> lista = persistencia.carregarTransacoes();
+        GerenciadorTransacoes gerenciador = new GerenciadorTransacoes(lista);
+
         // invokeLater garante que a interface seja criada na Event Dispatch Thread (EDT)
         // rodar Swing fora da EDT pode causar travamentos e comportamento imprevisível
         SwingUtilities.invokeLater(() -> {

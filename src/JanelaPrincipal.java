@@ -37,6 +37,10 @@ public class JanelaPrincipal extends JFrame {
 
         // barra de status no rodapé com o saldo atual
         labelSaldo = new JLabel();
+        labelSaldo.setFont(labelSaldo.getFont().deriveFont(Font.BOLD, 25f));
+
+        labelSaldo.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         JPanel panelStatus = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelStatus.add(labelSaldo);
         add(panelStatus, BorderLayout.SOUTH);
@@ -50,6 +54,7 @@ public class JanelaPrincipal extends JFrame {
      */
     public void atualizarSaldo(){
         double saldo = gerenciador.calcularSaldo();
-        labelSaldo.setText("saldo atual: R$ "+ String.format("%.2f",saldo));
+        labelSaldo.setText("Saldo atual: R$ "+ String.format("%.2f",saldo));
+        labelSaldo.setForeground(saldo >= 0 ? new Color(39,174,96): new Color(192, 57, 43));
     }
 }

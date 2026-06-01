@@ -10,7 +10,7 @@ public class Validador {
     /**
      * Verifica se o valor informado é valido para uma transação.
      * Zero ou negativo não são validos
-     * @param valor: valor a ser validado
+     * @param valor valor a ser validado
      * @return true se o valor for maior de zero e false caso contrário
      */
     public static boolean validarValor(double valor){
