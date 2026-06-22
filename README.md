@@ -62,7 +62,7 @@ java -cp ".:lib/flatlaf-3.7.1.jar" Main        # Mac/Linux
 ## Estrutura do projeto
 
 ```
-projeto/
+Leao/
 │
 ├──src
 │    ├── Main.java                   → Ponto de entrada — inicializa e abre a janela
